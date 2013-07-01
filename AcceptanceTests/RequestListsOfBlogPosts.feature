@@ -4,7 +4,9 @@
 	I want to be able to request a list of blog posts in JSON HAL & XML HAL formats
 
 Scenario: Request a list of blog posts in JSON format
-	Given I'm at the API entry point
-	And I specify "application/hal+json" on request headers
+	Given I'm at the API entry point using hal / json
 	When I follow the link to a list of blog posts
-	Then I will receive a list of blog posts in JSON / HAL format including links to each blog post
+	Then I will receive a list of blog posts 
+	And the list will include HAL links to itself
+	And the posts will bee in JSON / HAL format
+	And each post will include it's title and link to resource

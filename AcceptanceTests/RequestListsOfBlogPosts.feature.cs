@@ -73,14 +73,17 @@ namespace AcceptanceTests
 #line 6
 this.ScenarioSetup(scenarioInfo);
 #line 7
- testRunner.Given("I\'m at the API entry point", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I\'m at the API entry point using hal / json", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 8
- testRunner.And("I specify \"application/hal+json\" on request headers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 9
  testRunner.When("I follow the link to a list of blog posts", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 9
+ testRunner.Then("I will receive a list of blog posts", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 10
- testRunner.Then("I will receive a list of blog posts in JSON / HAL format including links to each " +
-                    "blog post", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.And("the list will include HAL links to itself", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 11
+ testRunner.And("the posts will bee in JSON / HAL format", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 12
+ testRunner.And("each post will include it\'s title and link to resource", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
