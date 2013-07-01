@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
 
 namespace RestfulApi
 {
@@ -12,8 +9,14 @@ namespace RestfulApi
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+                defaults: new {id = RouteParameter.Optional}
+                );
+
+            config.Routes.MapHttpRoute(
+                name: "RouteApi",
+                routeTemplate: "api",
+                defaults: new {controller = "API", action = "get"}
+                );
         }
     }
 }
