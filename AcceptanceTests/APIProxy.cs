@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Json;
+using System.Linq;
 using System.Net.Http;
 
 namespace AcceptanceTests
@@ -54,8 +55,14 @@ namespace AcceptanceTests
 
         public void FollowLink(string rel)
         {
-            string uri = (string) _resource.JsonValue["_links"]["self"]["href"];
-            _resource = PerformRequest(_format, uri );
+            var links = (JsonArray) _resource.JsonValue["_links"];
+            foreach (JsonObject link in links)
+            {
+                if ((string) link.GetValue("Rel") == "blogPosts")
+                {
+                    PerformRequest(_format, (string) link.GetValue("Href"));
+                }
+            }
 
         }
 

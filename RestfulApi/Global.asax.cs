@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using WebApi.Hal;
 
 namespace RestfulApi
 {
@@ -17,6 +18,9 @@ namespace RestfulApi
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+
+            GlobalConfiguration.Configuration.Formatters.Add(new JsonHalMediaTypeFormatter());
+            GlobalConfiguration.Configuration.Formatters.Add(new XmlHalMediaTypeFormatter());
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
