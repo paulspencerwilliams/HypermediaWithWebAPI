@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Json;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 
 namespace AcceptanceTests
@@ -20,6 +21,7 @@ namespace AcceptanceTests
         {
             using (var client = new HttpClient())
             {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/hal+json"));
                 var response = client.GetAsync(_baseURI + uri);
                 if (response.Result.IsSuccessStatusCode)
                 {
