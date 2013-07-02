@@ -7,41 +7,18 @@ namespace AcceptanceTests
 {
     public class ApiProxy
     {
-        private readonly ApiFormat _format;
         private Resource _resource;
-        private string _baseURI;
+        private readonly ResourceRequester _resourceRequester;
 
         public enum ApiFormat { Json, Xml}
         public ApiProxy(ApiFormat format)
         {
-            _format = format;
-            _baseURI = "http://localhost";
-            _resource = PerformRequest(format,  "/api");
-        }
-
-        private Resource PerformRequest(ApiFormat format, string uri)
-        {
-            using (var client = new HttpClient())
-            {
-                var response = client.GetAsync(_baseURI + uri);
-                if (response.Result.IsSuccessStatusCode)
-                {
-                    var responseString = response.Result.Content.ReadAsStringAsync().Result;
-                    var jsonValue = JsonValue.Parse(responseString);
-                    return new Resource(jsonValue, format);
-                }
-                else
-                {
-                    string message = String.Format("Request failed with code ({0}) and message '{1}'",
-                                                   new object[]
-                                                       {(int) response.Result.StatusCode, response.Result.ReasonPhrase});
-                    throw new Exception(message);
-                }
-            }
+            _resourceRequester = new ResourceRequester(format, "http://localhost");
+            _resource = ResourceRequester.PerformRequest( "/api");
         }
 
 
-        public Resource CurrentResource
+        public ApiProxy.Resource CurrentResource
         {
             get 
             { 
@@ -53,6 +30,11 @@ namespace AcceptanceTests
             }
         }
 
+        public ResourceRequester ResourceRequester
+        {
+            get { return _resourceRequester; }
+        }
+
         public void FollowLink(string rel)
         {
             var links = (JsonArray) _resource.JsonValue["_links"];
@@ -60,7 +42,7 @@ namespace AcceptanceTests
             {
                 if ((string) link.GetValue("Rel") == "blogPosts")
                 {
-                    PerformRequest(_format, (string) link.GetValue("Href"));
+                    ResourceRequester.PerformRequest((string) link.GetValue("Href"));
                 }
             }
 
