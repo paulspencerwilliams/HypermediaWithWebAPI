@@ -68,6 +68,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RequestListsOfBlogPosts.feature</DependentUpon>
     </Compile>
+    <Compile Include="Resource.cs" />
     <Compile Include="ResourceRequester.cs" />
     <Compile Include="Steps.cs" />
   </ItemGroup>

@@ -16,7 +16,7 @@ namespace AcceptanceTests
             _baseURI = baseUri;
         }
 
-        public ApiProxy.Resource PerformRequest(string uri)
+        public Resource PerformRequest(string uri)
         {
             using (var client = new HttpClient())
             {
@@ -25,7 +25,7 @@ namespace AcceptanceTests
                 {
                     var responseString = response.Result.Content.ReadAsStringAsync().Result;
                     var jsonValue = JsonValue.Parse(responseString);
-                    return new ApiProxy.Resource(jsonValue, _format);
+                    return new Resource(jsonValue, _format);
                 }
                 else
                 {

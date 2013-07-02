@@ -18,7 +18,7 @@ namespace AcceptanceTests
         }
 
 
-        public ApiProxy.Resource CurrentResource
+        public Resource CurrentResource
         {
             get 
             { 
@@ -46,28 +46,6 @@ namespace AcceptanceTests
                 }
             }
 
-        }
-
-        public class Resource
-        {
-            private readonly JsonValue _jsonValue;
-            private readonly ApiFormat _format;
-
-            public Resource(JsonValue jsonValue, ApiFormat format)
-            {
-                _jsonValue = jsonValue;
-                _format = format;
-            }
-
-            public ApiFormat Format
-            {
-                get { return _format; }
-            }
-
-            public JsonValue JsonValue
-            {
-                get { return _jsonValue; }
-            }
         }
     }
 }
