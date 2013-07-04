@@ -26,7 +26,7 @@ namespace AcceptanceTests
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
             var blogPosts = apiProxy.CurrentResource.JsonValue;
-            Assert.That(blogPosts["_embedded"].Count, Is.EqualTo(3));
+            Assert.That(blogPosts["_embedded"]["blogPosts"].Count, Is.EqualTo(3));
         }
 
         [Then(@"the list will include HAL links to itself")]
