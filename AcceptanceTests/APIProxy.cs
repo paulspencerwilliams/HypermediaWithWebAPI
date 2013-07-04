@@ -1,27 +1,30 @@
 ﻿using System;
 using System.Json;
-using System.Linq;
-using System.Net.Http;
 
 namespace AcceptanceTests
 {
     public class ApiProxy
     {
+        public enum ApiFormat
+        {
+            Json,
+            Xml
+        }
+
         private Resource _resource;
         private readonly ResourceRequester _resourceRequester;
 
-        public enum ApiFormat { Json, Xml}
         public ApiProxy(ApiFormat format)
         {
             _resourceRequester = new ResourceRequester(format, "http://localhost");
-            _resource = ResourceRequester.PerformRequest( "/api");
+            _resource = ResourceRequester.PerformRequest("/api");
         }
 
 
         public Resource CurrentResource
         {
-            get 
-            { 
+            get
+            {
                 if (_resource == null)
                 {
                     throw new NullReferenceException("CurrentResource hasn't been set yet, please navigate somewhere!");
@@ -37,15 +40,8 @@ namespace AcceptanceTests
 
         public void FollowLink(string rel)
         {
-            var links = (JsonArray) _resource.JsonValue["_links"];
-            foreach (JsonObject link in links)
-            {
-                if ((string) link.GetValue("Rel") == "blogPosts")
-                {
-                    ResourceRequester.PerformRequest((string) link.GetValue("Href"));
-                }
-            }
-
+            JsonValue link = _resource.JsonValue["_links"]["blogPosts"];
+            _resource = ResourceRequester.PerformRequest((string) link.GetValue("href"));
         }
     }
 }
