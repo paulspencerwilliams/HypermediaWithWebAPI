@@ -8,7 +8,7 @@ namespace RestfulApi.Models
 {
     public class BlogPostsRepresentation : RepresentationList<BlogPostRepresentation>
     {
-
+        
         public BlogPostsRepresentation() :base(new List<BlogPostRepresentation>())
         {
             
@@ -19,11 +19,10 @@ namespace RestfulApi.Models
 
         protected override void CreateHypermedia()
         {
-            var httpContextWrapper = new HttpContextWrapper(System.Web.HttpContext.Current);
             var urlHelper =
-                new UrlHelper(new RequestContext(httpContextWrapper, RouteTable.Routes.GetRouteData(httpContextWrapper)));
-            Href = urlHelper.RouteUrl("DefaultApi", new { Controller = "BlogPosts", Action="Get" });
-            Rel = "blogPosts";
+                new UrlHelper(HttpContext.Current.Request.RequestContext);
+            Href = urlHelper.HttpRouteUrl("DefaultApi", new { controller = "blogposts" });
+            Rel = "blogposts";
         }
 
 

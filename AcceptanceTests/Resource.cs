@@ -1,13 +1,14 @@
-﻿using System.Json;
+﻿
+using Newtonsoft.Json.Linq;
 
 namespace AcceptanceTests
 {
     public class Resource
     {
-        private readonly JsonValue _jsonValue;
+        private readonly JObject _jsonValue;
         private readonly ApiProxy.ApiFormat _format;
 
-        public Resource(JsonValue jsonValue, ApiProxy.ApiFormat format)
+        public Resource(JObject jsonValue, ApiProxy.ApiFormat format)
         {
             _jsonValue = jsonValue;
             _format = format;
@@ -18,7 +19,7 @@ namespace AcceptanceTests
             get { return _format; }
         }
 
-        public JsonValue JsonValue
+        public JObject JsonValue
         {
             get { return _jsonValue; }
         }

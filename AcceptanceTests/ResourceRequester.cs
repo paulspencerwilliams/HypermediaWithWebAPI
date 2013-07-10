@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Json;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
 
 
 namespace AcceptanceTests
@@ -28,7 +27,7 @@ namespace AcceptanceTests
                 if (response.Result.IsSuccessStatusCode)
                 {
                     var responseString = response.Result.Content.ReadAsStringAsync().Result;
-                    var jsonValue = JsonValue.Parse(responseString);
+                    var jsonValue = JObject.Parse(responseString);
                     return new Resource(jsonValue, _format);
                 }
                 else

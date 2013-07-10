@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
+using Newtonsoft.Json.Linq;
 using TechTalk.SpecFlow;
 
 namespace AcceptanceTests
@@ -18,15 +20,15 @@ namespace AcceptanceTests
         public void WhenIFollowTheLinkToAListOfBlogPosts()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            apiProxy.FollowLink("blogPosts");
+            apiProxy.FollowLink("blogposts");
         }
 
         [Then(@"I will receive a list of blog posts")]
         public void ThenIWillReceiveAListOfBlogPosts()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var blogPosts = apiProxy.CurrentResource.JsonValue;
-            Assert.That(blogPosts["_embedded"]["blogPosts"].Count, Is.EqualTo(3));
+            var blogPosts = (JArray)apiProxy.CurrentResource.JsonValue["_embedded"]["blogposts"];
+            Assert.That(blogPosts.Count, Is.EqualTo(2));
         }
 
         [Then(@"the list will include HAL links to itself")]
@@ -34,7 +36,9 @@ namespace AcceptanceTests
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
             var blogPosts = apiProxy.CurrentResource.JsonValue;
-            Assert.That(blogPosts["_links"]["self"], Is.EqualTo("/api/blogposts"));
+            var link = blogPosts["_links"]["self"].Value<String>("href");
+            var expected = "/api/blogposts";
+            Assert.That(link, Is.EqualTo(expected));
         }
 
         [Then(@"the posts will bee in JSON / HAL format")]
@@ -49,9 +53,9 @@ namespace AcceptanceTests
         public void ThenEachPostWillIncludeItSTitleAndLinkToResource()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var firstBlogPost = apiProxy.CurrentResource.JsonValue["embedded"]["blogposts"][0];
-            Assert.That(firstBlogPost["title"], Is.EqualTo("my first blog post"));
-            Assert.That(firstBlogPost["_links"]["self"], Is.EqualTo("/api/blogposts/1"));
+            var firstBlogPost = apiProxy.CurrentResource.JsonValue["_embedded"]["blogposts"].First;
+            Assert.That(firstBlogPost.Value<string>("title"), Is.EqualTo("my first post"));
+            Assert.That(firstBlogPost["_links"]["self"].Value<string>("href"), Is.EqualTo("/api/blogposts/1"));
         }
 
     }
