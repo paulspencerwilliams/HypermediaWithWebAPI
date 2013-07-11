@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using TechTalk.SpecFlow;
@@ -9,18 +10,12 @@ namespace AcceptanceTests
     public class Steps
     {
 
-        [Given(@"I'm at the API entry point using hal / json")]
-        public void GivenIMAtTheAPIEntryPointUsingHalJson()
-        {
-            var apiProxy = new ApiProxy(ApiProxy.ApiFormat.Json);
-            ScenarioContext.Current["apiProxy"] = apiProxy;
-        }
 
         [When(@"I follow the link to a list of blog posts")]
         public void WhenIFollowTheLinkToAListOfBlogPosts()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            apiProxy.FollowLink("blogposts");
+            apiProxy.FollowLink();
         }
 
         [Then(@"I will receive a list of blog posts")]
@@ -37,8 +32,7 @@ namespace AcceptanceTests
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
             var blogPosts = apiProxy.CurrentResource.JsonValue;
             var link = blogPosts["_links"]["self"].Value<String>("href");
-            var expected = "/api/blogposts";
-            Assert.That(link, Is.EqualTo(expected));
+            Assert.That(link, Is.EqualTo("/api/blogposts"));
         }
 
         [Then(@"the posts will bee in JSON / HAL format")]
@@ -56,6 +50,54 @@ namespace AcceptanceTests
             var firstBlogPost = apiProxy.CurrentResource.JsonValue["_embedded"]["blogposts"].First;
             Assert.That(firstBlogPost.Value<string>("title"), Is.EqualTo("my first post"));
             Assert.That(firstBlogPost["_links"]["self"].Value<string>("href"), Is.EqualTo("/api/blogposts/1"));
+        }
+
+
+        [Given(@"I've requested a list of blog posts")]
+        public void GivenIVeRequestedAListOfBlogPosts()
+        {
+            WhenIFollowTheLinkToAListOfBlogPosts();
+        }
+
+        [When(@"I follow the link to 'my first post'")]
+        public void WhenIFollowTheLinkTo()
+        {
+            var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
+            var blogPosts = (JArray)apiProxy.CurrentResource.JsonValue["_embedded"]["blogposts"];
+            JObject blogPost = null;
+            foreach (var possibleBlogPost in blogPosts)
+            {
+                if ((string)possibleBlogPost["title"] == "my first post")
+                {
+                    blogPost = (JObject) possibleBlogPost;
+                }
+            }
+
+            if (blogPost == null)
+            {
+                Assert.Fail(String.Format("Blog post with title '#{0}' was not found", "my first post"));
+            }
+            apiProxy.FollowLink(blogPost);
+
+        }
+
+        [Then(@"I will receive full details for 'my first post'")]
+        public void ThenIWillReceiveFullDetailsFor()
+        {
+            var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
+            var blogPost = apiProxy.CurrentResource.JsonValue;
+            Assert.That(blogPost.Value<string>("id"), Is.EqualTo("1"));
+            Assert.That(blogPost.Value<string>("title"), Is.EqualTo("my first post"));
+
+        }
+
+
+        [Then(@"the post will include HAL links to itself")]
+        public void ThenThePostWillIncludeHALLinksToItself()
+        {
+            var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
+            var link = apiProxy.CurrentResource.JsonValue["_links"]["self"].Value<String>("href");
+            Assert.That(link, Is.EqualTo("/api/blogposts/1"));
         }
 
     }

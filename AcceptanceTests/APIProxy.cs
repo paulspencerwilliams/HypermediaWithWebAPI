@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json.Linq;
 
 namespace AcceptanceTests
 {
@@ -37,10 +38,15 @@ namespace AcceptanceTests
             get { return _resourceRequester; }
         }
 
-        public void FollowLink(string rel)
+        public void FollowLink()
         {
             var link = _resource.JsonValue["_links"]["blogPosts"];
             _resource = ResourceRequester.PerformRequest(link.Value<string>("href"));
+        }
+
+        public void FollowLink(JObject resource)
+        {
+            _resource = ResourceRequester.PerformRequest(resource["_links"]["self"].Value<string>("href"));
         }
     }
 }
