@@ -21,7 +21,6 @@ namespace RestfulApi.Controllers
 
         public BlogPostsRepresentation Get()
         {
-            string url = Url.Route("DefaultApi", new { controller = "BlogPosts" });
             return new BlogPostsRepresentation(_blogPosts.ToList());
         }
 
