@@ -8,9 +8,6 @@ namespace AcceptanceTests
     public class ResponseParser
     {
 
-        public ResponseParser()
-        {
-        }
 
         public Resource Parse(Task<HttpResponseMessage> response, ApiProxy.ApiFormat format)
         {   
