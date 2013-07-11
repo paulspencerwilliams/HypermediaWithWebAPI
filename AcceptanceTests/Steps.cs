@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using TechTalk.SpecFlow;
@@ -99,6 +100,22 @@ namespace AcceptanceTests
             var link = apiProxy.CurrentResource.JsonValue["_links"]["self"].Value<String>("href");
             Assert.That(link, Is.EqualTo("/api/blogposts/1"));
         }
+
+
+        [When(@"I request a non existent blog post")]
+        public void WhenIRequestANonExistentBlogPost()
+        {
+            var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
+            apiProxy.FollowLink("/api/blogposts/999");
+        }
+
+        [Then(@"I should receive a (.*) Not Found")]
+        public void ThenIShouldReceiveANotFound(int p0)
+        {
+            var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
+            Assert.That(apiProxy.CurrentResource.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Http;
 using RestfulApi.Models;
 
@@ -34,7 +35,7 @@ namespace RestfulApi.Controllers
                     return blogPost;
                 }
             }
-            return null;
+            throw new HttpResponseException(HttpStatusCode.NotFound);
 
         }
     }

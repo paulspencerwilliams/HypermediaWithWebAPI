@@ -48,5 +48,10 @@ namespace AcceptanceTests
         {
             _resource = ResourceRequester.PerformRequest(resource["_links"]["self"].Value<string>("href"));
         }
+
+        public void FollowLink(String uri)
+        {
+            _resource = ResourceRequester.PerformRequest(uri);
+        }
     }
 }

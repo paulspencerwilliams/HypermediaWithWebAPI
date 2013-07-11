@@ -85,6 +85,23 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Request a non existent blog post")]
+        [NUnit.Framework.CategoryAttribute("json")]
+        public virtual void RequestANonExistentBlogPost()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Request a non existent blog post", new string[] {
+                        "json"});
+#line 15
+this.ScenarioSetup(scenarioInfo);
+#line 16
+ testRunner.When("I request a non existent blog post", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 17
+ testRunner.Then("I should receive a 404 Not Found", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

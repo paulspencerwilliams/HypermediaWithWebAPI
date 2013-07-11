@@ -9,3 +9,9 @@ Scenario: Request a list of blog posts in JSON format
 	When I follow the link to 'my first post'
 	Then I will receive full details for 'my first post'
 	And the post will include HAL links to itself
+
+
+@json
+Scenario: Request a non existent blog post
+	When I request a non existent blog post
+	Then I should receive a 404 Not Found
