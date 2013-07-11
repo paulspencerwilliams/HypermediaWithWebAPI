@@ -18,10 +18,5 @@ namespace AcceptanceTests
             ScenarioContext.Current["apiProxy"] = apiProxy;
         }
 
-        [AfterScenario]
-        public void AfterScenario()
-        {
-            //TODO: implement logic that has to run after executing each scenario
-        }
     }
 }
