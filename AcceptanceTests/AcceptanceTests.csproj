@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Resource.cs" />
     <Compile Include="ResourceRequester.cs" />
+    <Compile Include="ResponseParser.cs" />
     <Compile Include="Steps.cs" />
   </ItemGroup>
   <ItemGroup>
