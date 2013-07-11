@@ -23,7 +23,7 @@ namespace AcceptanceTests
         public void ThenIWillReceiveAListOfBlogPosts()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var blogPosts = (JArray)apiProxy.CurrentResource.JsonValue["_embedded"]["blogposts"];
+            var blogPosts = (JArray)apiProxy.CurrentRepresentation.JsonValue["_embedded"]["blogposts"];
             Assert.That(blogPosts.Count, Is.EqualTo(2));
         }
 
@@ -31,7 +31,7 @@ namespace AcceptanceTests
         public void ThenTheListWillIncludeHALLinksToItself()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var blogPosts = apiProxy.CurrentResource.JsonValue;
+            var blogPosts = apiProxy.CurrentRepresentation.JsonValue;
             var link = blogPosts["_links"]["self"].Value<String>("href");
             Assert.That(link, Is.EqualTo("/api/blogposts"));
         }
@@ -40,7 +40,7 @@ namespace AcceptanceTests
         public void ThenThePostsWillBeeInJSONHALFormat()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            Assert.That(apiProxy.CurrentResource.Format, Is.EqualTo(ApiProxy.ApiFormat.Json));
+            Assert.That(apiProxy.CurrentRepresentation.Format, Is.EqualTo(ApiProxy.ApiFormat.Json));
         }
 
 
@@ -48,7 +48,7 @@ namespace AcceptanceTests
         public void ThenEachPostWillIncludeItSTitleAndLinkToResource()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var firstBlogPost = apiProxy.CurrentResource.JsonValue["_embedded"]["blogposts"].First;
+            var firstBlogPost = apiProxy.CurrentRepresentation.JsonValue["_embedded"]["blogposts"].First;
             Assert.That(firstBlogPost.Value<string>("title"), Is.EqualTo("my first post"));
             Assert.That(firstBlogPost["_links"]["self"].Value<string>("href"), Is.EqualTo("/api/blogposts/1"));
         }
@@ -64,32 +64,21 @@ namespace AcceptanceTests
         public void WhenIFollowTheLinkTo()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var blogPosts = (JArray)apiProxy.CurrentResource.JsonValue["_embedded"]["blogposts"];
-            JObject blogPost = null;
-            foreach (var possibleBlogPost in blogPosts)
-            {
-                if ((string)possibleBlogPost["title"] == "my first post")
-                {
-                    blogPost = (JObject) possibleBlogPost;
-                }
-            }
-
+            var blogPost = apiProxy.CurrentRepresentation.FindBlogPostRepresentation("my first post");
             if (blogPost == null)
             {
                 Assert.Fail(String.Format("Blog post with title '#{0}' was not found", "my first post"));
             }
-            apiProxy.FollowLink(blogPost);
-
+            apiProxy.FollowLink((JObject)blogPost);
         }
 
         [Then(@"I will receive full details for 'my first post'")]
         public void ThenIWillReceiveFullDetailsFor()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var blogPost = apiProxy.CurrentResource.JsonValue;
+            var blogPost = apiProxy.CurrentRepresentation.JsonValue;
             Assert.That(blogPost.Value<string>("id"), Is.EqualTo("1"));
             Assert.That(blogPost.Value<string>("title"), Is.EqualTo("my first post"));
-
         }
 
 
@@ -97,7 +86,7 @@ namespace AcceptanceTests
         public void ThenThePostWillIncludeHALLinksToItself()
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            var link = apiProxy.CurrentResource.JsonValue["_links"]["self"].Value<String>("href");
+            var link = apiProxy.CurrentRepresentation.JsonValue["_links"]["self"].Value<String>("href");
             Assert.That(link, Is.EqualTo("/api/blogposts/1"));
         }
 
@@ -113,7 +102,7 @@ namespace AcceptanceTests
         public void ThenIShouldReceiveANotFound(int p0)
         {
             var apiProxy = (ApiProxy)ScenarioContext.Current["apiProxy"];
-            Assert.That(apiProxy.CurrentResource.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(apiProxy.CurrentRepresentation.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
 

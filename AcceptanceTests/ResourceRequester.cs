@@ -20,7 +20,7 @@ namespace AcceptanceTests
             _responseParser = new ResponseParser();
         }
 
-        public Resource PerformRequest(string uri)
+        public Representation PerformRequest(string uri)
         {
             using (var client = new HttpClient())
             {

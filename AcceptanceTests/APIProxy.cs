@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 
 namespace AcceptanceTests
@@ -11,25 +13,25 @@ namespace AcceptanceTests
             Xml
         }
 
-        private Resource _resource;
+        private Representation _representation;
         private readonly ResourceRequester _resourceRequester;
 
         public ApiProxy(ApiFormat format)
         {
             _resourceRequester = new ResourceRequester(format, "http://localhost");
-            _resource = ResourceRequester.PerformRequest("/api");
+            _representation = ResourceRequester.PerformRequest("/api");
         }
 
 
-        public Resource CurrentResource
+        public Representation CurrentRepresentation
         {
             get
             {
-                if (_resource == null)
+                if (_representation == null)
                 {
                     throw new NullReferenceException("CurrentResource hasn't been set yet, please navigate somewhere!");
                 }
-                return _resource;
+                return _representation;
             }
         }
 
@@ -40,18 +42,20 @@ namespace AcceptanceTests
 
         public void FollowLink()
         {
-            var link = _resource.JsonValue["_links"]["blogPosts"];
-            _resource = ResourceRequester.PerformRequest(link.Value<string>("href"));
+            var link = _representation.JsonValue["_links"]["blogPosts"];
+            _representation = ResourceRequester.PerformRequest(link.Value<string>("href"));
         }
 
         public void FollowLink(JObject resource)
         {
-            _resource = ResourceRequester.PerformRequest(resource["_links"]["self"].Value<string>("href"));
+            _representation = ResourceRequester.PerformRequest(resource["_links"]["self"].Value<string>("href"));
         }
 
         public void FollowLink(String uri)
         {
-            _resource = ResourceRequester.PerformRequest(uri);
+            _representation = ResourceRequester.PerformRequest(uri);
         }
+
+        
     }
 }
